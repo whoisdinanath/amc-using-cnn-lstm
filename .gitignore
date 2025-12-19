@@ -1,0 +1,52 @@
+# Model checkpoints
+checkpoints/
+checkpoints_*/
+*.pth
+*.pt
+
+# Dataset files
+*.hdf5
+*.h5
+dataset/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# Virtual environments
+venv/
+env/
+ENV/
+*.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# NumPy/data files
+*.npy
+*.npz
+*.pkl
+*.pickle
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+tmp/
+temp/
