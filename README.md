@@ -160,6 +160,13 @@ Default settings we used:
 - Can classify signals in real-time
 
 Some modulation types are easier to identify than others. Check out the inference notebook for detailed results.
+
+## Desktop Application
+
+We've also built a PyQt desktop application for this project! You can interact with the model through a user-friendly GUI interface.
+
+**Check it out here**: [Automatic RF Identification Desktop App](https://github.com/krishna-ji/automatic-rf-identification-for-intelligent-communication)
+
 ## License
 
 MIT License - feel free to use this code for your own projects!
