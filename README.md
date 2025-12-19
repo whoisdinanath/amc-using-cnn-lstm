@@ -11,7 +11,7 @@ A deep learning system that identifies different types of wireless signal modula
 
 In wireless communication, signals are modulated (encoded) in different ways. This project uses deep learning to automatically recognize which modulation technique is being used in a signal - kind of like teaching a computer to "listen" and identify different types of radio signals.
 
-We built a system that can identify 24 different modulation types from real radio signals, even when the signals are noisy. The system uses a combination of CNN (for recognizing patterns) and LSTM (for understanding sequences over time) neural networks.
+We built a system that can identify 10 different modulation types from real radio signals, even when the signals are noisy. The system uses a combination of CNN (for recognizing patterns) and LSTM (for understanding sequences over time) neural networks. We trained it on a mixed dataset combining custom-generated signals with the RadioML dataset.
 
 ## Key Features
 
@@ -19,18 +19,19 @@ We built a system that can identify 24 different modulation types from real radi
 - Uses AlexNet (a CNN) to look at signal patterns
 - LSTM network to understand how signals change over time
 - Attention mechanism to focus on the important parts
-- Trained on RadioML 2018.01A dataset with real radio signals
+- Trained on a mixed dataset combining custom-generated signals with RadioML 2018.01A
 
 ### What It Can Classify
-The system can recognize 24 different types of modulation schemes:
-- Digital modulations: BPSK, QPSK, 8PSK, 16QAM, 64QAM, and many more
-- Analog modulations: AM, FM
-- Other schemes: GMSK, OQPSK
+The system can recognize 10 different modulation schemes:
+- BPSK, QPSK, 8PSK
+- 16QAM, 64QAM
+- AM-DSB-SC, AM-SSB-SC
+- FM, GMSK, GFSK
 
 ### Training Features
 - Saves progress automatically so you can stop and resume training
 - Tracks accuracy and loss over time
-- Works with different noise levels (SNR from -20 to +30 dB)
+- Works with different noise levels (SNR from 0 to 30 dB)
 - Visual plots to see how well it's learning
 
 ## Prerequisites
@@ -70,9 +71,11 @@ cd amc-using-cnn-lstm
 ```bash
 pip install torch torchvision numpy pandas h5py matplotlib seaborn scikit-learn
 ```
-
 3. **Get the dataset**:
    - Download RadioML 2018.01A from [DeepSig](https://www.deepsig.ai/datasets)
+   - Generate custom signals using the provided notebooks
+   - The training uses a mixed dataset combining both sources
+   - Update the dataset path in `train.ipynb`g.ai/datasets)
    - Put the file somewhere and update the path in `train.ipynb`
 
 ## How to Use
@@ -141,10 +144,16 @@ The model works in three stages:
 1. **CNN (AlexNet)**: Takes the radio signal and extracts important features, similar to how you'd recognize patterns in an image
 
 2. **LSTM**: Looks at sequences of these features over time to understand temporal patterns
-
-3. **Attention + Classifier**: Focuses on the most important parts and makes the final decision about which modulation type it is
-
 Default settings we used:
+- Batch size: 32
+- Learning rate: 0.0001
+- Number of epochs: 10
+- Trained on sequences of 8 time steps
+- SNR range: 0 to 30 dB
+
+## Challenges We Faced
+
+**Dataset Creation**: We needed more training data, so we generated custom modulation signals and mixed them with RadioML data. Getting the signal characteristics right was tricky.
 ## Challenges We Faced
 
 **Dataset Issues**: We started with a smaller custom dataset but later switched to RadioML's 24-class dataset. Had to rewrite a lot of code to handle the different format.
@@ -171,11 +180,19 @@ We've also built a PyQt desktop application for this project! You can interact w
 
 MIT License - feel free to use this code for your own projects!
 
-## Acknowledgments
+## Dataset
 
-Big thanks to:
-- DeepSig for the RadioML dataset
-- Our professors and advisors at Thapathali Campus for their guidance
+This project uses a mixed dataset approach:
+- **RadioML 2018.01A**: Real-world radio signals with various impairments
+- **Custom Generated Signals**: Synthetic modulation signals we created to augment the training data
+- **SNR Range**: 0 to 30 dB (covering clean to noisy signals)
+- **10 Modulation Classes**: Focused on commonly used schemes in wireless communication
+
+## References
+
+- RadioML 2018.01A Dataset: https://www.deepsig.ai/datasets
+- O'Shea, T. J., et al. "Over-the-Air Deep Learning Based Radio Signal Classification"
+- PyTorch: https://pytorch.org/t Thapathali Campus for their guidance
 - The PyTorch team and open-source community
 - Everyone who's contributed to research on deep learning for radio signals
 
