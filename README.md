@@ -1,212 +1,87 @@
-# Automatic Modulation Classification using CNN-LSTM
+# CNN-LSTM Hybrid Architecture for Over-the-Air Automatic Modulation Classification using SDR
 
-A deep learning system that identifies different types of wireless signal modulations. This project was our minor project at the Department of Electronics and Computer Engineering, Thapathali Campus, IOE, Nepal.
+Dinanath Padhya, Krishna Acharya, Bipul Kumar Dahal, Dinesh Baniya Kshatri  
+Thapathali Campus, Institute of Engineering, Tribhuvan University, Kathmandu, Nepal  
+*Journal of Innovations in Engineering Education*, Vol. 8, No. 1, pp. 32–39, 2025
 
-## Team Members
-- Krishna Acharya
-- Dinanath Padhya
-- Bipul Kumar Dahal
+**[Project page](https://whoisdinanath.github.io/amc-using-cnn-lstm/)** · **[Paper](https://www.nepjol.info/index.php/jiee/article/view/82136/67472)** · **[DOI](https://doi.org/10.3126/jiee.v8i1.82136)**
 
-## What This Project Does
+![CNN-LSTM architecture](docs/static/images/architecture.svg)
 
-In wireless communication, signals are modulated (encoded) in different ways. This project uses deep learning to automatically recognize which modulation technique is being used in a signal - kind of like teaching a computer to "listen" and identify different types of radio signals.
+Notebooks for the paper. Each 1024-sample I/Q frame is split into eight overlapping windows of 224 samples. A modified AlexNet turns each window into a 256-dimensional feature vector, an LSTM models the sequence of eight vectors, and a fully connected head predicts one of nine modulation schemes: BPSK, QPSK, 8PSK, 16QAM, 64QAM, AM-DSB-SC, AM-SSB-SC, FM and GMSK. The model is trained on RadioML 2018.01A combined with signals generated in GNU Radio, at SNRs from 0 to 30 dB.
 
-We built a system that can identify 10 different modulation types from real radio signals, even when the signals are noisy. The system uses a combination of CNN (for recognizing patterns) and LSTM (for understanding sequences over time) neural networks. We trained it on a mixed dataset combining custom-generated signals with the RadioML dataset.
+## Results
 
-## Key Features
+Test-set results from Table 2 of the paper. Precision, recall and F1 are macro averages over the nine classes; the best value in each column is in bold.
 
-### What Makes It Work
-- Uses AlexNet (a CNN) to look at signal patterns
-- LSTM network to understand how signals change over time
-- Attention mechanism to focus on the important parts
-- Trained on a mixed dataset combining custom-generated signals with RadioML 2018.01A
+| Configuration | Accuracy (%) | Precision (%) | Recall (%) | F1 (%) |
+| --- | ---: | ---: | ---: | ---: |
+| Batch size 16 | 91.46 | 91.46 | 91.46 | 91.33 |
+| Batch size 32 | 91.34 | 91.47 | 91.34 | 91.30 |
+| Batch size 32, tuned | **93.48** | 93.53 | **93.48** | **93.45** |
+| Single-head attention | 93.34 | **93.56** | 93.34 | 93.22 |
 
-### What It Can Classify
-The system can recognize 10 different modulation schemes:
-- BPSK, QPSK, 8PSK
-- 16QAM, 64QAM
-- AM-DSB-SC, AM-SSB-SC
-- FM, GMSK, GFSK
+## Repository structure
 
-### Training Features
-- Saves progress automatically so you can stop and resume training
-- Tracks accuracy and loss over time
-- Works with different noise levels (SNR from 0 to 30 dB)
-- Visual plots to see how well it's learning
+| Notebook | Purpose |
+| --- | --- |
+| [`01_mixup_with_radioml`](notebooks/01_mixup_with_radioml.ipynb) | Keeps nine classes of RadioML 2018.01A at SNR ≥ 0 dB and merges them with the generated signals (AWGN and noise-free) into one HDF5 file. This is the dataset used in the paper. |
+| [`02_custom_dataset_mixup`](notebooks/02_custom_dataset_mixup.ipynb) | Builds a ten-class variant (adds GFSK) from generated signals only. |
+| [`03_parameter_tuning`](notebooks/03_parameter_tuning.ipynb) | Hyperparameter search with Ray Tune and the ASHA scheduler. |
+| [`04_train`](notebooks/04_train.ipynb) | Preprocessing, model definition and training; keeps the checkpoint with the lowest validation loss. |
+| [`05_inference`](notebooks/05_inference.ipynb) | Test-set evaluation and ONNX export. |
+| [`06_plots`](notebooks/06_plots.ipynb) | Figures: theoretical symbol error rates, constellation diagrams, tuning curves and results for each configuration. |
+| [`07_attention_plots`](notebooks/07_attention_plots.ipynb) | Figures for the attention variant. |
+| [`08_attention_comparison_plots`](notebooks/08_attention_comparison_plots.ipynb) | The tuned model and the attention variant side by side. |
 
-## Prerequisites
+Notebooks 06–08 plot from saved `.npy` arrays (predictions and training histories), which are not tracked in the repository. The project page lives in [`docs/`](docs/).
 
-### Software Requirements
-- Python 3.8 or higher
-- PyTorch 1.10+ with CUDA support (recommended)
-- Jupyter Notebook or JupyterLab
-- Git
+## Setup
 
-### Hardware Requirements
-- NVIDIA GPU with 8GB+ VRAM (recommended for training)
-- 16GB+ RAM
-- 50GB+ storage for datasets
-
-### Python Libraries
-```
-torch
-torchvision
-numpy
-## What You Need
-
-### Software
-- Python 3.8 or newer
-- PyTorch (GPU version recommended for faster training)
-- Jupyter Notebook
-- Basic Python libraries: numpy, pandas, matplotlib, h5py
-## How to Set It Up
-
-1. **Clone this repository**:
 ```bash
 git clone https://github.com/whoisdinanath/amc-using-cnn-lstm.git
 cd amc-using-cnn-lstm
+pip install -r requirements.txt
 ```
 
-2. **Install the required libraries**:
-```bash
-pip install torch torchvision numpy pandas h5py matplotlib seaborn scikit-learn
-```
-3. **Get the dataset**:
-   - Download RadioML 2018.01A from [DeepSig](https://www.deepsig.ai/datasets)
-   - Generate custom signals using the provided notebooks
-   - The training uses a mixed dataset combining both sources
-   - Update the dataset path in `train.ipynb`g.ai/datasets)
-   - Put the file somewhere and update the path in `train.ipynb`
+`04_train` keeps the windowed training set on the GPU in float32 (about 9 GB for the nine-class dataset), so a GPU with 16 GB of memory is recommended.
 
-## How to Use
+## Data
 
-### Training the Model
+- **RadioML 2018.01A:** download `GOLD_XYZ_OSC.0001_1024.hdf5` from [DeepSig](https://www.deepsig.ai/datasets).
+- **Generated signals:** the GNU Radio recordings (pickled dictionaries keyed by `(modulation, SNR)`) are not included in this repository.
 
-1. Open `train.ipynb` in Jupyter:
-```bash
-jupyter notebook train.ipynb
-```
+Dataset and checkpoint paths in the notebooks point to the Kaggle inputs used for the paper; update `dataset_path` and the checkpoint paths before running.
 
-2. Update the dataset path in the notebook to point to your downloaded dataset
+## Reproducing the paper
 
-3. Run the cells - the notebook will:
-   - Load the radio signals
-   - Train the neural network
-   - Save checkpoints automatically
-   - Show you graphs of how well it's learning
+1. Run `01_mixup_with_radioml` to build `GOLD_XYZ_OSC_POSITIVE_COMBINED.hdf5` (nine classes, 779,688 frames).
+2. In `04_train`, point `dataset_path` to that file and set `params["num_classes"] = 9` and `modulation_schemes = range(9)`; the notebook is currently configured for the ten-class dataset from `02_custom_dataset_mixup`. Training uses Adam with a learning rate of 1.5 × 10⁻⁴, batch size 32, dropout 0.6 and 10 epochs.
+3. Evaluate the best checkpoint with `05_inference`.
 
-Training can take several hours depending on your hardware. The model saves its progress, so you can stop and resume anytime.
+## Over-the-air demo
 
-### Testing the Model
+The PyQt desktop application used for the over-the-air tests (live capture with an RTL-SDR, ONNX inference) is maintained in a separate repository: [krishna-ji/automatic-rf-identification-for-intelligent-communication-using-cnn-lstm](https://github.com/krishna-ji/automatic-rf-identification-for-intelligent-communication-using-cnn-lstm).
 
-Open `inference.ipynb` to test the trained model on new data. You'll see:
-- How accurate it is at different noise levels
-- Which modulation types it struggles with
-- Confusion matrix showing what it mistakes for what
+## Citation
 
-### Playing with Parameters
-
-Use `parameter_tuning.ipynb` if you want to experiment with different settings to improve accuracy.
-
-### Visualizing Results
-
-The `plots.ipynb` notebook lets you create nice visualizations of the signals and results.
-
-## Project Files
-
-```
-├── train.ipynb                  # Main training notebook
-├── inference.ipynb              # Testing the model
-├── parameter_tuning.ipynb       # Experimenting with settings
-├── plots.ipynb                  # Making graphs and visualizations
-├── test_radioml_dataset.py      # Check if dataset is loaded correctly
-└── checkpoints/                 # Saved models
-```
-
-## Training Configuration
-
-Default hyperparameters:
-```python
-params = {
-    "num_classes": 24,
-    "num_seq": 8,              # Sequence length
-    "batch_size": 32,
-    "learning_rate": 0.0001,
-    "num_epochs": 10,
-    "dropout": 0.5,
-    "gradient_clip": 1.0
+```bibtex
+@article{padhya2025cnnlstm,
+  title   = {{CNN-LSTM} hybrid Architecture for over-the-air Automatic
+             Modulation Classification using {SDR}},
+  author  = {Padhya, Dinanath and Acharya, Krishna and Dahal, Bipul Kumar
+             and Baniya Kshatri, Dinesh},
+  journal = {Journal of Innovations in Engineering Education},
+  volume  = {8},
+  number  = {1},
+  pages   = {32--39},
+  year    = {2025},
+  doi     = {10.3126/jiee.v8i1.82136}
 }
 ```
-## How It Works (Technical Details)
-
-The model works in three stages:
-
-1. **CNN (AlexNet)**: Takes the radio signal and extracts important features, similar to how you'd recognize patterns in an image
-
-2. **LSTM**: Looks at sequences of these features over time to understand temporal patterns
-Default settings we used:
-- Batch size: 32
-- Learning rate: 0.0001
-- Number of epochs: 10
-- Trained on sequences of 8 time steps
-- SNR range: 0 to 30 dB
-
-## Challenges We Faced
-
-**Dataset Creation**: We needed more training data, so we generated custom modulation signals and mixed them with RadioML data. Getting the signal characteristics right was tricky.
-## Challenges We Faced
-
-**Dataset Issues**: We started with a smaller custom dataset but later switched to RadioML's 24-class dataset. Had to rewrite a lot of code to handle the different format.
-
-**Memory Problems**: The full dataset is huge and our computers kept running out of memory. We solved this by loading data in smaller batches.
-
-**Training Stability**: The model was hard to train at first - it would sometimes explode or get stuck. We fixed this with gradient clipping and better learning rates.
-
-**Capturing Time Patterns**: Radio signals have patterns over time that are tricky to learn. Adding LSTM and attention mechanism really helped with this.
-- Around 85-90% accuracy overall
-- Over 95% accurate when the signal is clean (high SNR)
-- Still works at about 60% even with noisy signals
-- Can classify signals in real-time
-
-Some modulation types are easier to identify than others. Check out the inference notebook for detailed results.
-
-## Desktop Application
-
-We've also built a PyQt desktop application for this project! You can interact with the model through a user-friendly GUI interface.
-
-**Check it out here**: [Automatic RF Identification Desktop App](https://github.com/krishna-ji/automatic-rf-identification-for-intelligent-communication)
 
 ## License
 
-MIT License - feel free to use this code for your own projects!
+The code is released under the [MIT License](LICENSE). The paper is published by JIEE under [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).
 
-## Dataset
-
-This project uses a mixed dataset approach:
-- **RadioML 2018.01A**: Real-world radio signals with various impairments
-- **Custom Generated Signals**: Synthetic modulation signals we created to augment the training data
-- **SNR Range**: 0 to 30 dB (covering clean to noisy signals)
-- **10 Modulation Classes**: Focused on commonly used schemes in wireless communication
-
-## References
-
-- RadioML 2018.01A Dataset: https://www.deepsig.ai/datasets
-- O'Shea, T. J., et al. "Over-the-Air Deep Learning Based Radio Signal Classification"
-- PyTorch: https://pytorch.org/t Thapathali Campus for their guidance
-- The PyTorch team and open-source community
-- Everyone who's contributed to research on deep learning for radio signals
-
-## References
-
-- RadioML 2018.01A Dataset: https://www.deepsig.ai/datasets
-- O'Shea, T. J., et al. "Over-the-Air Deep Learning Based Radio Signal Classification"
-- PyTorch: https://pytorch.org/
-
-## Questions?
-
-Feel free to open an issue on GitHub if you have questions or run into problems.
-
----
-
-Made by Krishna Acharya, Dinanath Padhya, and Bipul Kumar Dahal  
-Electronics and Computer Engineering, Thapathali Campus, IOE, Nepal
+This work was carried out as a minor project in the Department of Electronics and Computer Engineering, Thapathali Campus.

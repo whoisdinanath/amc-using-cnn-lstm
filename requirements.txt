@@ -1,0 +1,17 @@
+numpy
+pandas
+scipy
+scikit-learn
+h5py
+matplotlib
+seaborn
+torch>=1.13
+jupyter
+
+# 03_parameter_tuning
+ray[tune]>=2.7
+
+# ONNX export in 05_inference
+onnx
+onnxscript
+onnxruntime

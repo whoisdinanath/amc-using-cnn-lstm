@@ -19,10 +19,15 @@ __pycache__/
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 
+# Exported models and tuning runs
+*.onnx
+ray_results/
+
 # Virtual environments
 venv/
 env/
 ENV/
+.venv/
 *.venv
 
 # IDE

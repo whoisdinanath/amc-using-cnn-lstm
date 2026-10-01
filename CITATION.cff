@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: If you use this code, please cite the paper.
+title: Automatic Modulation Classification using CNN-LSTM
+type: software
+authors:
+  - family-names: Padhya
+    given-names: Dinanath
+  - family-names: Acharya
+    given-names: Krishna
+  - family-names: Dahal
+    given-names: Bipul Kumar
+repository-code: "https://github.com/whoisdinanath/amc-using-cnn-lstm"
+license: MIT
+preferred-citation:
+  type: article
+  title: CNN-LSTM hybrid Architecture for over-the-air Automatic Modulation Classification using SDR
+  authors:
+    - family-names: Padhya
+      given-names: Dinanath
+    - family-names: Acharya
+      given-names: Krishna
+    - family-names: Dahal
+      given-names: Bipul Kumar
+    - family-names: Baniya Kshatri
+      given-names: Dinesh
+  journal: Journal of Innovations in Engineering Education
+  volume: 8
+  issue: 1
+  start: 32
+  end: 39
+  year: 2025
+  doi: "10.3126/jiee.v8i1.82136"
