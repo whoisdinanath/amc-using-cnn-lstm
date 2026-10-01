@@ -1,0 +1,342 @@
+:root {
+  --text: #1f2328;
+  --muted: #59636e;
+  --faint: #8c959f;
+  --rule: #d1d9e0;
+  --link: #1f5fbf;
+  --surface: #f6f8fa;
+  --dark: #24292f;
+  --prose: 760px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header */
+
+header {
+  padding: 72px 0 36px;
+  text-align: center;
+}
+
+h1 {
+  max-width: 900px;
+  margin: 0 auto 24px;
+  font-size: clamp(1.7rem, 1.1rem + 2.2vw, 2.45rem);
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.authors {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+}
+
+.authors span {
+  display: inline-block;
+  margin: 0 0.2em;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.affiliation,
+.venue {
+  margin: 0;
+  color: var(--muted);
+}
+
+.venue {
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 20px;
+  border-radius: 999px;
+  background: var(--dark);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.button:hover {
+  background: #000;
+  text-decoration: none;
+}
+
+.button svg {
+  flex: none;
+  width: 17px;
+  height: 17px;
+}
+
+/* Sections */
+
+section {
+  padding: 40px 0 8px;
+}
+
+section > * {
+  max-width: var(--prose);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+section > .wide {
+  max-width: none;
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-size: 1.55rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+sup {
+  position: relative;
+  top: -0.45em;
+  font-size: 0.75em;
+  line-height: 0;
+  vertical-align: baseline;
+}
+
+/* Figures */
+
+figure {
+  margin: 28px auto;
+}
+
+figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+figcaption {
+  max-width: var(--prose);
+  margin: 12px auto 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.teaser {
+  margin-top: 8px;
+}
+
+.screenshot img {
+  border-radius: 6px;
+}
+
+/* Tables */
+
+.table-figure figcaption {
+  margin: 0 0 10px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+}
+
+th,
+td {
+  padding: 7px 12px;
+}
+
+.results th,
+.results td {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.results th:first-child,
+.results td:first-child {
+  padding-left: 0;
+  text-align: left;
+}
+
+.results th:last-child,
+.results td:last-child {
+  padding-right: 0;
+}
+
+.results thead th {
+  border-top: 1.5px solid var(--text);
+  border-bottom: 1px solid var(--text);
+  font-weight: 600;
+}
+
+.results tbody tr:last-child td {
+  border-bottom: 1.5px solid var(--text);
+}
+
+.facts {
+  margin-top: 8px;
+}
+
+.facts th {
+  width: 1%;
+  padding-left: 0;
+  font-weight: 600;
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.facts td {
+  padding-right: 0;
+}
+
+.facts tr + tr > * {
+  border-top: 1px solid var(--rule);
+}
+
+/* Citation */
+
+.bibtex {
+  position: relative;
+}
+
+pre {
+  margin: 0;
+  padding: 18px 20px;
+  overflow-x: auto;
+  border-radius: 6px;
+  background: var(--surface);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+pre,
+code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+.copy {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.copy:hover {
+  border-color: var(--faint);
+  color: var(--text);
+}
+
+/* Footer */
+
+footer {
+  max-width: var(--prose);
+  margin: 48px auto 0;
+  padding: 24px 24px 56px;
+  border-top: 1px solid var(--rule);
+  color: var(--faint);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+footer p {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  body {
+    font-size: 16px;
+  }
+
+  header {
+    padding-top: 44px;
+  }
+
+  .results {
+    font-size: 0.85rem;
+  }
+
+  .results th,
+  .results td {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .results td:first-child {
+    white-space: normal;
+  }
+}
