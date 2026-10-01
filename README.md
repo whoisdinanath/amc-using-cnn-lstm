@@ -4,9 +4,9 @@ Dinanath Padhya, Krishna Acharya, Bipul Kumar Dahal, Dinesh Baniya Kshatri
 Thapathali Campus, Institute of Engineering, Tribhuvan University, Kathmandu, Nepal  
 *Journal of Innovations in Engineering Education*, Vol. 8, No. 1, pp. 32–39, 2025
 
-**[Project page](https://whoisdinanath.github.io/amc-using-cnn-lstm/)** · **[Paper](https://www.nepjol.info/index.php/jiee/article/view/82136/67472)** · **[DOI](https://doi.org/10.3126/jiee.v8i1.82136)**
+**[Project page](https://whoisdinanath.github.io/amc/)** · **[Paper](https://www.nepjol.info/index.php/jiee/article/view/82136/67472)** · **[DOI](https://doi.org/10.3126/jiee.v8i1.82136)**
 
-![CNN-LSTM architecture](docs/static/images/architecture.svg)
+![CNN-LSTM architecture](assets/architecture.svg)
 
 Notebooks for the paper. Each 1024-sample I/Q frame is split into eight overlapping windows of 224 samples. A modified AlexNet turns each window into a 256-dimensional feature vector, an LSTM models the sequence of eight vectors, and a fully connected head predicts one of nine modulation schemes: BPSK, QPSK, 8PSK, 16QAM, 64QAM, AM-DSB-SC, AM-SSB-SC, FM and GMSK. The model is trained on RadioML 2018.01A combined with signals generated in GNU Radio, at SNRs from 0 to 30 dB.
 
@@ -34,7 +34,7 @@ Test-set results from Table 2 of the paper. Precision, recall and F1 are macro a
 | [`07_attention_plots`](notebooks/07_attention_plots.ipynb) | Figures for the attention variant. |
 | [`08_attention_comparison_plots`](notebooks/08_attention_comparison_plots.ipynb) | The tuned model and the attention variant side by side. |
 
-Notebooks 06–08 plot from saved `.npy` arrays (predictions and training histories), which are not tracked in the repository. The project page lives in [`docs/`](docs/).
+Notebooks 06–08 plot from saved `.npy` arrays (predictions and training histories), which are not tracked in the repository.
 
 ## Setup
 
